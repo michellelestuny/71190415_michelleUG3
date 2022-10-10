@@ -1,69 +1,65 @@
-class nodetabungan:
-    def __init__(self, no_rekening, nama, saldo):
-        self.no_rekening = no_rekening
-        self.nama = nama
-        self.saldo = saldo
-        self.next = None
-class SLNC:
+class PrefixConverter:
     def __init__(self):
-        self.head = None
-        self.tail = None
-        self.size = 0
-    def _len_ (self):
-        return self._size
-    def isEmpty (self):
-        return self.size == 0
-    def insert_head(self, no_rekening, nama, saldo):
-        baru = nodetabungan(no_rekening, nama, saldo)
-        if self.isEmpty():
-            self.no_rekening = baru
-            self.nama = baru
-            self.saldo = baru
+        self.stacklist = " "
+        self.expression =" "
+        self._data = " "
+        self._size = 0
+    def push(self, data):
+        self.stacklist.__add__(data)
+    def is_empty(self):
+        return self._size == 0
+    def peek(self):
+        if self.stacklist:
+            return self.stacklist[-1]
         else:
-            baru.next = self.head
-            self.head = baru
-        self.size += 1
-    def filter(self, saldo):
-        baru = nodetabungan(None, None, saldo)
-        if self.isEmpty() == True:
-            return None
+            return "isi stack kosong"
+    def pop(self, data):
+        if self.stacklist:
+            data = self.stacklist.pop[-1]
+            return data
         else:
-            if self.saldo == baru and self.saldo <= baru:
-                return self.saldo == None
-    def delete(self, no_rekening, nama, saldo):
-        baru = nodetabungan(no_rekening, nama, saldo)
-        if self.isEmpty() == True:
-            return None
+            return "isi stack kosong"
+    def cekvalidexpre(self, expression):
+        if expression == "+" or expression == "-":
+            return 1
+        elif expression == "*" or expression == "/":
+            return 2
         else:
-            if baru == self.head:
-                hapus =  self.head
-                self.head = self.head.next
-                del hapus
-            else:
-                del baru
-            self.size -= 1
-    def update(self, saldo):
-        baru = nodetabungan(None, None, saldo)
-        if self.isEmpty() == True:
-            return None
-        else:
-            if baru == 0 and baru >= 100:
-                self.update = baru / 100 * self.saldo
-                return self.update
-            else:
-                print("Maaf besaran persen harus diantara 0-100")
-    def print(self):
-        bantu = self.head
-        while bantu != None:
-            print('no rekening: ', bantu.no_rekening, '\nnama: ', bantu.nama, '\nsaldo: ', bantu.saldo)
-            bantu = bantu.next
-            
-slnc = SLNC()
-slnc.insert_head(201,'hanif',250000)
-slnc.insert_head(110,'yudha',150000)
-slnc.print()
-slnc.filter(150000)
-slnc.print()
-slnc.update(200)
-slnc.update(50)
-slnc.print()
+            return 3
+        return 0
+
+    def infixtoprefix(self, expression):
+        stack = PrefixConverter()
+        stack.push(')')
+        expression = expression + '('
+        output = ""
+        for i in range(len(expression)-1, -1, -1):
+            print(i)
+            if expression[i].isnumeric() == True:
+                output+=expression[i]
+            elif expression[i] == ")":
+                stack.push(expression[i])
+            elif expression[i] == "-" or expression[i] == "+" or expression[i] == "*" or expression[i] == "/" or expression[i] == "^":
+                if expression[i] == "^":
+                    while self.cekvalidexpre(expression[i]) <= self.cekvalidexpre(stack.pop()):
+                        output+=stack.pop()
+                else:
+                    while self.cekvalidexpre(expression[i]) < self.cekvalidexpre(stack.pop()):
+                        output+=stack.pop()
+                stack.push(expression[i])
+            elif expression[i] == "(":
+                while stack.is_empty()== False:
+                    if stack.top() != "(":
+                        output+=stack.pop()
+                    stack.pop()
+        while stack.peek()== False:
+            output+=stack.pop()
+        print(output)
+        
+if __name__ == '__main__':
+        expresi1 = PrefixConverter()
+        print(expresi1.infixtoprefix("1+2+3*4/2-1"))
+        print(expresi1.infixtoprefix("A * (B + C) / D"))
+        print(expresi1.infixtoprefix("(1+2)*3)"))
+        print(expresi1.infixtoprefix("20 * 3 - 10 + 289"))
+        print(expresi1.infixtoprefix("100 * 30 / 600 - 30 + 100 * 777"))
